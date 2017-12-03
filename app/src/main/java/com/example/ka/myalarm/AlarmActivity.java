@@ -46,12 +46,13 @@ public class AlarmActivity extends AppCompatActivity {
         text.setText(hour+":"+m);
 
         Intent intent = getIntent();
-        if(intent.getStringExtra("once").equals("once")){
-            Time time = Time.findById(Time.class,intent.getLongExtra("requestCode",0));
-            time.enable = false;
-            time.save();
+        if(intent.getStringExtra("once")!=null) {
+            if (intent.getStringExtra("once").equals("once")) {
+                Time time = Time.findById(Time.class, intent.getLongExtra("requestCode", 0));
+                time.enable = false;
+                time.save();
+            }
         }
-
         player = MediaPlayer.create(this,R.raw.alarm);
         player.start();
         player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {

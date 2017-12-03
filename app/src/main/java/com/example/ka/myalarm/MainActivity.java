@@ -10,12 +10,15 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.ka.myalarm.Adapters.ClockingAdapter;
+import com.example.ka.myalarm.Adapters.CounterAdapter;
 import com.example.ka.myalarm.Adapters.TimeAdapter;
 
 import com.example.ka.myalarm.Adapters.ViewPagerAdapter;
 import com.example.ka.myalarm.Fragments.AlarmFragment;
 import com.example.ka.myalarm.Fragments.ClockingFragment;
+import com.example.ka.myalarm.Fragments.CounterFragment;
 import com.example.ka.myalarm.Object.Clocking;
+import com.example.ka.myalarm.Object.Counter;
 import com.example.ka.myalarm.Object.Time;
 import com.example.ka.myalarm.Receivers.AlarmReceiver;
 
@@ -76,12 +79,36 @@ public class MainActivity extends AppCompatActivity implements TimeAdapter.SendA
         clockingAdapter.setClockings(clockings);
         clockingFragment.setAdapter(clockingAdapter);
 
+
+
+
+        CounterFragment counterFragment = new CounterFragment();
+        List<Counter> counters = Counter.listAll(Counter.class);
+       if(counters == null) {
+            counters = new ArrayList<>();
+            Counter c = new Counter(0,0,5);
+            c.save();
+            counters.add(c);
+            c = new Counter(0,1,0);
+            c.save();
+            counters.add(c);
+            c = new Counter(0,5,0);
+            c.save();
+           counters.add(c);
+            c = new Counter(1,0,0);
+            c.save();
+           counters.add(c);
+
+       }
+        CounterAdapter counterAdapter = new CounterAdapter();
+        counterAdapter.setCounters(counters);
+        counterFragment.setAdapter(counterAdapter);
+
         //view pager
-        ArrayList<Fragment> fragments = new ArrayList<>(4);
+        ArrayList<Fragment> fragments = new ArrayList<>(3);
         fragments.add(alarmFragment);
         fragments.add(clockingFragment);
-        fragments.add(new Fragment());
-        fragments.add(new Fragment());
+        fragments.add(counterFragment);
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.setFragments(fragments);
         mViewPager.setAdapter(viewPagerAdapter);
@@ -103,6 +130,8 @@ public class MainActivity extends AppCompatActivity implements TimeAdapter.SendA
                     case 1:
                         mTabLayout.setBackgroundColor(getResources().getColor(R.color.clocking_background));
                         return;
+                    case 2:
+                        mTabLayout.setBackgroundColor(getResources().getColor(R.color.counter_background));
                     default:
                         return;
                 }
@@ -116,11 +145,9 @@ public class MainActivity extends AppCompatActivity implements TimeAdapter.SendA
 
         // tab layout
         mTabLayout.setupWithViewPager(mViewPager);
-        mTabLayout.setScrollBarSize(4);
         mTabLayout.getTabAt(0).setText(getString(R.string.alarm));
         mTabLayout.getTabAt(1).setText(getString(R.string.clocking));
         mTabLayout.getTabAt(2).setText(getString(R.string.counting_time));
-        mTabLayout.getTabAt(3).setText(getString(R.string.timer));
         mTabLayout.setTabTextColors(getResources().getColor(R.color.unselect_text),getResources().getColor(R.color.selected_text));
         mTabLayout.setBackgroundColor(getResources().getColor(R.color.background));
         mTabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.indicator));
